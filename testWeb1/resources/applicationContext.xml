@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+		xmlns:aop="http://www.springframework.org/schema/aop"  
+		xmlns:tx="http://www.springframework.org/schema/tx"  
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd                                         
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd      
+	">
+	<!-- 开启注解扫描 -->
+	<context:component-scan base-package="com.baizhi.*"></context:component-scan>
+	<!-- 1. 引入外部小配置文件-->
+	<!-- <context:property-placeholder location="classpath:jdbc.properties"/> -->
+	<!-- 2. 配置数据源 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+		<!-- 配置数据源相关参数 -->
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/cmfw"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="zhi123"></property>
+		<property name="initialSize" value="5"></property>
+		<property name="maxActive" value="10"></property>
+		<property name="maxWait" value="1000"></property>	
+	</bean>
+	<!-- 3. 配置SqlsessionFacTory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 注入数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 指定mapper文件的位置 
+			*Mapper.xml 代表匹配所有 xxxMapper.xml的文件
+		-->
+		<property name="mapperLocations" value="classpath:com/baizhi/mapper/*Mapper.xml"></property>
+		<!-- 给实体类起别名: 指定实体类所在包结构的位置，默认以类名作为别名  -->
+		<property name="typeAliasesPackage" value="com.baizhi.entity"></property>
+		
+	</bean>
+	<!-- 4. 创建dao接口实现类对象 -->
+	<bean id="mapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 引用SqlSessionFactory -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+		<!-- 指定dao接口所在包的位置  : 
+			默认获取dao实现类的对象依据是    接口类名首字母小写
+		-->
+		<property name="basePackage" value="com.baizhi.dao"></property>	
+	</bean>
+	<!-- 5.创建事务管理对象 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>	
+	</bean>
+	<!--6. 开启注解驱动 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
