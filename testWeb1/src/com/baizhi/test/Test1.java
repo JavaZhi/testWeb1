@@ -23,7 +23,7 @@ public class Test1 {
         List<Admin> admins = as.findAll();
         for (Admin admin : admins) {
             System.out.println(admin);
-
+            System.out.println(123);
         }
 
     }
